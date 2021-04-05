@@ -1,0 +1,54 @@
+FROM python:3.8.3-alpine
+
+WORKDIR /usr/src/app
+
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+RUN apk update 
+
+RUN apk add postgresql-dev gcc python3-dev musl-dev
+
+RUN apk add --no-cache jpeg-dev zlib-dev
+RUN apk add --no-cache --virtual .build-deps build-base linux-headers \
+    && pip install Pillow==8.0.1 && apk add bash
+RUN apk add gcc musl-dev
+
+COPY ./requirements.txt .
+RUN pip install -r requirements.txt
+RUN mkdir -p /home/app
+
+ENV HOME=/home/app
+
+ENV DEBUG=0
+ENV SECRET_KEY=ahmadmansooripvhamidlooliabolnoob
+ENV DJANGO_ALLOWED_HOSTS=*
+ENV SQL_ENGINE=django.db.backends.postgresql
+ENV SQL_DATABASE=netproject_database
+ENV SQL_USER=root
+ENV SQL_PASSWORD=ahmadmansooripassword
+ENV SQL_HOST=postgresql
+ENV SQL_PORT=5432
+ENV DATABASE=postgres
+ENV REDIS_SERVER_NAME=redis
+ENV POSTGRES_USER=root
+ENV POSTGRES_PASSWORD=ahmadmansooripassword
+ENV POSTGRES_DB=netproject_database
+ENV STORAGE_ACCESS_KEY_ID=d42c609c-6e12-4a8b-9e2a-3ee79a77cbdb
+ENV STORAGE_SECRET_ACCESS_KEY=cca6a107af90a3f541b13fd029627914770bed54860f4637484241fff5c6582f
+ENV STORAGE_BUCKET_NAME=varknowvodstatic
+ENV KAVENEGAR_TOKEN=5339376F4A462F73347437377275776D78336F4D383641315A792F68656879307A5277656E716A54376B383D
+ENV CACHE_HOST=memcached
+
+ENV DJANGO_SETTINGS_MODULE=netproject.prod-settings
+ENV APP_HOME=/home/app/web
+RUN mkdir $APP_HOME
+WORKDIR $APP_HOME
+
+RUN apk update && apk add libpq
+
+COPY . $APP_HOME
+# COPY execute.sh execute.sh
+EXPOSE 80
+CMD gunicorn netproject.wsgi:application --bind 0.0.0.0:80
