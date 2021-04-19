@@ -43,8 +43,8 @@ AWS_LOCATION = "static"
 # ]
 
 STATIC_URL = 'https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/'
-# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 AWS_S3_FILE_OVERWRITE = False
-# DEFAULT_FILE_STORAGE = "varknowVod.storage_backends.MediaStorage"
+DEFAULT_FILE_STORAGE = "netproject.storage_backends.MediaStorage"
 
 CELERY_BROKER_URL="amqp://{}:{}".format(os.environ.get("RABBITMQ_HOST"), os.environ.get("RABBITMQ_PORT", 5672))
